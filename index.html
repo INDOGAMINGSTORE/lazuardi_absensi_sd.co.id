@@ -1,0 +1,1109 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Absensi Siswa</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .nav-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            width: 100%;
+            max-width: 1000px;
+        }
+
+        .tab-btn {
+            background: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 12px;
+            font-size: 17px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .tab-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+
+        .tab-btn.active {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 35px 50px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            width: 90vw;
+            max-width: 950px;
+            height: 75vh;
+            max-height: 650px;
+            margin: 0 auto;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .school-logo {
+            position: absolute;
+            top: 25px;
+            left: 35px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .school-logo-icon {
+            width: 50px;
+            height: 50px;
+            background: white;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            animation: logoFloat 3s ease-in-out infinite;
+        }
+
+        @keyframes logoFloat {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-5px) rotate(3deg); }
+        }
+
+        .school-logo-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            padding: 5px;
+        }
+
+        .school-name {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .school-name-main {
+            font-size: 16px;
+            font-weight: 700;
+            color: #667eea;
+            line-height: 1.2;
+        }
+
+        .school-name-sub {
+            font-size: 12px;
+            color: #999;
+            font-weight: 500;
+        }
+
+        .dashboard-container {
+            background: white;
+            border-radius: 20px;
+            padding: 35px 50px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            width: 95vw;
+            max-width: 1400px;
+            height: 80vh;
+            max-height: 750px;
+            margin: 0 auto;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .page {
+            display: none;
+            opacity: 0;
+            transform: scale(0.95);
+            transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+        }
+
+        .page.active {
+            display: block;
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .page.fade-out {
+            opacity: 0;
+            transform: scale(0.95);
+        }
+
+        .logo-transition-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        .logo-transition-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .logo-transition-overlay img {
+            width: 100px;
+            height: 100px;
+            object-fit: contain;
+            animation: logoTransitionZoom 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        @keyframes logoTransitionZoom {
+            0% { transform: scale(0); opacity: 0; }
+            50% { transform: scale(3); opacity: 1; }
+            100% { transform: scale(0); opacity: 0; }
+        }
+
+        h1 {
+            text-align: center;
+            color: #667eea;
+            margin-bottom: 25px;
+            margin-top: 30px;
+            font-size: 32px;
+        }
+
+        .step {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.4s ease-in-out, transform 0.4s ease-in-out;
+            transform: translateY(20px);
+        }
+
+        .step.active {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @keyframes fadeIn {
+            from { 
+                opacity: 0; 
+                transform: translateY(20px); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0); 
+            }
+        }
+
+        label {
+            display: block;
+            margin-bottom: 15px;
+            color: #333;
+            font-weight: 600;
+            font-size: 18px;
+        }
+
+        .name-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+            max-height: 450px;
+            overflow-y: auto;
+        }
+
+        .name-btn {
+            background: #f5f5f5;
+            border: 3px solid transparent;
+            border-radius: 12px;
+            padding: 20px 15px;
+            font-size: 17px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .name-btn:hover {
+            background: #e8e8e8;
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+
+        .name-btn.selected {
+            border-color: #667eea;
+            background: #f0f4ff;
+            color: #667eea;
+        }
+
+        .emoji-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 20px;
+            margin: 25px 0;
+        }
+
+        .emoji-btn {
+            background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+            border: 3px solid transparent;
+            border-radius: 20px;
+            padding: 30px;
+            font-size: 55px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .emoji-btn:nth-child(1) { animation-delay: 0s; }
+        .emoji-btn:nth-child(2) { animation-delay: 0.5s; }
+        .emoji-btn:nth-child(3) { animation-delay: 1s; }
+        .emoji-btn:nth-child(4) { animation-delay: 1.5s; }
+        .emoji-btn:nth-child(5) { animation-delay: 2s; }
+        .emoji-btn:nth-child(6) { animation-delay: 2.5s; }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .emoji-btn::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
+            transform: scale(0);
+            transition: transform 0.6s ease-out;
+        }
+
+        .emoji-btn:hover::before {
+            transform: scale(1);
+        }
+
+        .emoji-btn:hover {
+            transform: scale(1.3) rotate(15deg) translateY(-10px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+            animation: none;
+        }
+
+        .emoji-btn:active {
+            transform: scale(1.1) rotate(0deg);
+        }
+
+        .emoji-btn.selected {
+            border-color: #667eea;
+            background: linear-gradient(135deg, #a29bfe 0%, #6c5ce7 100%);
+            transform: scale(1.2);
+            animation: wiggle 0.5s ease-in-out, float 3s ease-in-out infinite;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.5);
+        }
+
+        @keyframes wiggle {
+            0%, 100% { transform: rotate(0deg) scale(1.2); }
+            25% { transform: rotate(-15deg) scale(1.25); }
+            75% { transform: rotate(15deg) scale(1.25); }
+        }
+
+        .emoji-btn .emoji-icon {
+            display: inline-block;
+            transition: transform 0.3s ease;
+        }
+
+        /* Happy - Melompat gembira */
+        .emoji-btn:nth-child(1):hover .emoji-icon,
+        .emoji-btn:nth-child(1).selected .emoji-icon {
+            animation: happyJump 0.6s ease infinite;
+        }
+
+        @keyframes happyJump {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-15px) scale(1.2); }
+        }
+
+        /* Sad - Turun sedih */
+        .emoji-btn:nth-child(2):hover .emoji-icon,
+        .emoji-btn:nth-child(2).selected .emoji-icon {
+            animation: sadDrop 1.5s ease infinite;
+        }
+
+        @keyframes sadDrop {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(8px) scale(0.95); }
+        }
+
+        /* Tired - Goyang ngantuk */
+        .emoji-btn:nth-child(3):hover .emoji-icon,
+        .emoji-btn:nth-child(3).selected .emoji-icon {
+            animation: tiredSway 2s ease-in-out infinite;
+        }
+
+        @keyframes tiredSway {
+            0%, 100% { transform: rotate(0deg) translateX(0); }
+            25% { transform: rotate(-8deg) translateX(-5px); }
+            75% { transform: rotate(8deg) translateX(5px); }
+        }
+
+        /* Scared - Gemetar takut */
+        .emoji-btn:nth-child(4):hover .emoji-icon,
+        .emoji-btn:nth-child(4).selected .emoji-icon {
+            animation: scaredShake 0.3s ease infinite;
+        }
+
+        @keyframes scaredShake {
+            0%, 100% { transform: translateX(0) scale(1); }
+            25% { transform: translateX(-4px) scale(0.95); }
+            75% { transform: translateX(4px) scale(0.95); }
+        }
+
+        /* Excited - Berputar excited */
+        .emoji-btn:nth-child(5):hover .emoji-icon,
+        .emoji-btn:nth-child(5).selected .emoji-icon {
+            animation: excitedBounce 0.5s ease infinite;
+        }
+
+        @keyframes excitedBounce {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            25% { transform: scale(1.2) rotate(-10deg); }
+            75% { transform: scale(1.2) rotate(10deg); }
+        }
+
+        /* Angry - Goyang marah */
+        .emoji-btn:nth-child(6):hover .emoji-icon,
+        .emoji-btn:nth-child(6).selected .emoji-icon {
+            animation: angryShake 0.4s ease infinite;
+        }
+
+        @keyframes angryShake {
+            0%, 100% { transform: rotate(0deg) scale(1); }
+            25% { transform: rotate(-12deg) scale(1.1); }
+            75% { transform: rotate(12deg) scale(1.1); }
+        }
+
+        .emoji-label {
+            display: block;
+            font-size: 14px;
+            margin-top: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .action-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-checkin {
+            background: #10b981;
+            color: white;
+        }
+
+        .btn-checkin:hover {
+            background: #059669;
+            transform: translateY(-2px);
+        }
+
+        .btn-checkout {
+            background: #ef4444;
+            color: white;
+        }
+
+        .btn-checkout:hover {
+            background: #dc2626;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #e0e0e0;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #d0d0d0;
+        }
+
+        .success-message {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .success-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+
+        .success-text {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .success-details {
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        /* Dashboard Styles */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .stat-card h3 {
+            font-size: 14px;
+            margin-bottom: 10px;
+            opacity: 0.9;
+        }
+
+        .stat-card .number {
+            font-size: 36px;
+            font-weight: bold;
+        }
+
+        .chart-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-bottom: 25px;
+        }
+
+        .chart-card {
+            background: #f9fafb;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .chart-card h3 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 18px;
+        }
+
+        #emojiChart {
+            max-width: 300px;
+            margin: 0 auto;
+        }
+
+        .attendance-list {
+            background: #f9fafb;
+            padding: 25px;
+            border-radius: 15px;
+            max-height: 280px;
+            overflow-y: auto;
+        }
+
+        .attendance-list h3 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 18px;
+        }
+
+        .attendance-item {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .attendance-item.checkin {
+            border-left: 4px solid #10b981;
+        }
+
+        .attendance-item.checkout {
+            border-left: 4px solid #ef4444;
+        }
+
+        .download-section {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .btn-download {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .btn-excel {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+        }
+
+        .btn-excel:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.4);
+        }
+
+        .btn-pdf {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+        }
+
+        .btn-pdf:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(239, 68, 68, 0.4);
+        }
+
+        .error {
+            color: #ef4444;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        @media (max-width: 768px) {
+            .chart-section {
+                grid-template-columns: 1fr;
+            }
+            .download-section {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Logo Transition Overlay -->
+    <div class="logo-transition-overlay" id="logoTransition">
+        <img src="OIP.webp" alt="Logo SD Lazuardi">
+    </div>
+
+    <div class="nav-tabs">
+        <button class="tab-btn active" onclick="switchPage('student')">Absensi Siswa</button>
+        <button class="tab-btn" onclick="switchPage('teacher')">Dashboard Guru</button>
+    </div>
+
+    <!-- Halaman Absensi Siswa -->
+    <div class="page active" id="studentPage">
+        <div class="container">
+            <div class="school-logo">
+                <div class="school-logo-icon">
+                    <img src="OIP.webp" alt="Logo SD Lazuardi">
+                </div>
+                <div class="school-name">
+                    <div class="school-name-main">SD Lazuardi</div>
+                    <div class="school-name-sub">Depok</div>
+                </div>
+            </div>
+            
+            <h1>📚 Absensi Siswa</h1>
+            
+            <!-- Step 1: Pilih Nama -->
+            <div class="step active" id="step1">
+                <label>Pilih Nama Anda:</label>
+                <div class="name-grid" id="nameGrid"></div>
+                <p class="error" id="nameError"></p>
+            </div>
+
+            <!-- Step 2: Pilih Emoji -->
+            <div class="step" id="step2">
+                <label>Bagaimana perasaan Anda hari ini?</label>
+                <div class="emoji-grid">
+                    <button class="emoji-btn" onclick="selectEmoji('😊 Happy', this)">
+                        <span class="emoji-icon">😊</span>
+                        <span class="emoji-label">Happy</span>
+                    </button>
+                    <button class="emoji-btn" onclick="selectEmoji('😢 Sad', this)">
+                        <span class="emoji-icon">😢</span>
+                        <span class="emoji-label">Sad</span>
+                    </button>
+                    <button class="emoji-btn" onclick="selectEmoji('😴 Tired', this)">
+                        <span class="emoji-icon">😴</span>
+                        <span class="emoji-label">Tired</span>
+                    </button>
+                    <button class="emoji-btn" onclick="selectEmoji('😱 Scared', this)">
+                        <span class="emoji-icon">😱</span>
+                        <span class="emoji-label">Scared</span>
+                    </button>
+                    <button class="emoji-btn" onclick="selectEmoji('🤩 Excited', this)">
+                        <span class="emoji-icon">🤩</span>
+                        <span class="emoji-label">Excited</span>
+                    </button>
+                    <button class="emoji-btn" onclick="selectEmoji('😠 Angry', this)">
+                        <span class="emoji-icon">😠</span>
+                        <span class="emoji-label">Angry</span>
+                    </button>
+                </div>
+                <p class="error" id="emojiError"></p>
+                <div class="action-buttons">
+                    <button class="btn btn-secondary" onclick="backToName()">Kembali</button>
+                    <button class="btn btn-primary" onclick="nextToAction()">Lanjut</button>
+                </div>
+            </div>
+
+            <!-- Step 3: Check In / Check Out -->
+            <div class="step" id="step3">
+                <label>Pilih Tindakan:</label>
+                <div class="action-buttons">
+                    <button class="btn btn-checkin" onclick="submitAttendance('Check In')">✅ Check In</button>
+                    <button class="btn btn-checkout" onclick="submitAttendance('Check Out')">🚪 Check Out</button>
+                </div>
+                <button class="btn btn-secondary" style="width: 100%; margin-top: 15px;" onclick="backToEmoji()">Kembali</button>
+            </div>
+
+            <!-- Step 4: Success -->
+            <div class="step" id="step4">
+                <div class="success-message">
+                    <div class="success-icon">✅</div>
+                    <div class="success-text" id="successText"></div>
+                    <div class="success-details" id="successDetails"></div>
+                    <button class="btn btn-primary" onclick="resetForm()">Absen Lagi</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Halaman Dashboard Guru -->
+    <div class="page" id="teacherPage">
+        <div class="dashboard-container">
+            <div class="school-logo">
+                <div class="school-logo-icon">
+                    <img src="OIP.webp" alt="Logo SD Lazuardi">
+                </div>
+                <div class="school-name">
+                    <div class="school-name-main">SD Lazuardi</div>
+                    <div class="school-name-sub">Jakarta</div>
+                </div>
+            </div>
+            
+            <h1>👨‍🏫 Dashboard Guru</h1>
+
+            <div class="download-section">
+                <button class="btn-download btn-excel" onclick="downloadExcel()">
+                    📊 Download Excel
+                </button>
+                <button class="btn-download btn-pdf" onclick="downloadPDF()">
+                    📄 Download PDF
+                </button>
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>Total Siswa</h3>
+                    <div class="number" id="totalStudents">16</div>
+                </div>
+                <div class="stat-card" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+                    <h3>Sudah Check In</h3>
+                    <div class="number" id="checkedIn">0</div>
+                </div>
+                <div class="stat-card" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);">
+                    <h3>Sudah Check Out</h3>
+                    <div class="number" id="checkedOut">0</div>
+                </div>
+                <div class="stat-card" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">
+                    <h3>Kehadiran Hari Ini</h3>
+                    <div class="number" id="attendanceRate">0%</div>
+                </div>
+            </div>
+
+            <div class="chart-section">
+                <div class="chart-card">
+                    <h3>📊 Status Absensi</h3>
+                    <canvas id="attendanceChart"></canvas>
+                </div>
+                <div class="chart-card">
+                    <h3>😊 Distribusi Mood Siswa</h3>
+                    <canvas id="emojiChart"></canvas>
+                </div>
+            </div>
+
+            <div class="attendance-list">
+                <h3>📋 Riwayat Absensi Hari Ini</h3>
+                <div id="attendanceHistory"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Daftar nama siswa SD
+        const studentNames = [
+            'Ahmad Rizky', 'Alya Putri', 'Bima Sakti', 'Chelsea Vania',
+            'Daffa Akbar', 'Elsa Cantika', 'Faiz Akmal', 'Gita Anindya',
+            'Haikal Farhan', 'Inara Salma', 'Jihan Zahra', 'Kenzo Aditya',
+            'Luna Azzahra', 'Mikha Ardian', 'Naura Syifa', 'Ozzy Pratama',
+            'Putri Anisa', 'Rafa Mahendra', 'Sakura Dewi', 'Tara Amelia',
+            'Umar Fadhil', 'Valen Citra', 'Wahyu Fikri', 'Xaviera Aulia',
+            'Yusuf Hakim', 'Zayn Malik', 'Aira Putri', 'Bryan Adiputra',
+            'Clara Safira', 'Daffa Ramadhan'
+        ];
+
+        let currentStep = 1;
+        let studentName = '';
+        let selectedEmoji = '';
+        let attendanceHistory = [];
+
+        // Chart objects
+        let attendanceChart = null;
+        let emojiChart = null;
+
+        // Switch between pages
+        function switchPage(page) {
+            const currentPage = document.querySelector('.page.active');
+            const logoOverlay = document.getElementById('logoTransition');
+            
+            // Show logo transition
+            logoOverlay.classList.add('active');
+            
+            setTimeout(() => {
+                if (currentPage) {
+                    currentPage.classList.remove('active');
+                }
+                
+                // Update tabs
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                
+                // Show new page
+                if (page === 'student') {
+                    document.getElementById('studentPage').classList.add('active');
+                    document.querySelectorAll('.tab-btn')[0].classList.add('active');
+                } else {
+                    document.getElementById('teacherPage').classList.add('active');
+                    document.querySelectorAll('.tab-btn')[1].classList.add('active');
+                    updateDashboard();
+                }
+                
+                // Hide logo overlay
+                setTimeout(() => {
+                    logoOverlay.classList.remove('active');
+                }, 400);
+            }, 400);
+        }
+
+        // Load nama siswa
+        function loadStudentNames() {
+            const nameGrid = document.getElementById('nameGrid');
+            studentNames.forEach(name => {
+                const btn = document.createElement('button');
+                btn.className = 'name-btn';
+                btn.textContent = name;
+                btn.onclick = () => selectName(name, btn);
+                nameGrid.appendChild(btn);
+            });
+        }
+
+        function selectName(name, btn) {
+            document.querySelectorAll('.name-btn').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            studentName = name;
+            document.getElementById('nameError').textContent = '';
+            
+            setTimeout(() => {
+                showStep(2);
+            }, 300);
+        }
+
+        function showStep(step) {
+            const currentStepEl = document.querySelector('.step.active');
+            if (currentStepEl) {
+                currentStepEl.classList.remove('active');
+            }
+            
+            setTimeout(() => {
+                document.getElementById('step' + step).classList.add('active');
+                currentStep = step;
+            }, 100);
+        }
+
+        function selectEmoji(emoji, btn) {
+            document.querySelectorAll('.emoji-btn').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            selectedEmoji = emoji;
+            document.getElementById('emojiError').textContent = '';
+        }
+
+        function nextToAction() {
+            if (selectedEmoji === '') {
+                document.getElementById('emojiError').textContent = 'Pilih emoji terlebih dahulu!';
+                return;
+            }
+            showStep(3);
+        }
+
+        function submitAttendance(action) {
+            const now = new Date();
+            const time = now.toLocaleTimeString('id-ID');
+            const date = now.toLocaleDateString('id-ID');
+            
+            const record = {
+                name: studentName,
+                emoji: selectedEmoji,
+                action: action,
+                time: time,
+                date: date
+            };
+            
+            attendanceHistory.unshift(record);
+            
+            // Reset form dan langsung balik ke step 1
+            setTimeout(() => {
+                resetForm();
+            }, 500);
+        }
+
+        function resetForm() {
+            document.querySelectorAll('.name-btn').forEach(b => b.classList.remove('selected'));
+            document.querySelectorAll('.emoji-btn').forEach(b => b.classList.remove('selected'));
+            studentName = '';
+            selectedEmoji = '';
+            showStep(1);
+        }
+
+        function backToName() {
+            showStep(1);
+        }
+
+        function backToEmoji() {
+            showStep(2);
+        }
+
+        // Dashboard Functions
+        function updateDashboard() {
+            // Hitung statistik
+            const checkedInCount = attendanceHistory.filter(r => r.action === 'Check In').length;
+            const checkedOutCount = attendanceHistory.filter(r => r.action === 'Check Out').length;
+            const attendanceRate = Math.round((checkedInCount / studentNames.length) * 100);
+
+            document.getElementById('totalStudents').textContent = studentNames.length;
+            document.getElementById('checkedIn').textContent = checkedInCount;
+            document.getElementById('checkedOut').textContent = checkedOutCount;
+            document.getElementById('attendanceRate').textContent = attendanceRate + '%';
+
+            // Update attendance history list
+            updateAttendanceList();
+
+            // Update charts
+            updateCharts();
+        }
+
+        function updateAttendanceList() {
+            const historyDiv = document.getElementById('attendanceHistory');
+            if (attendanceHistory.length === 0) {
+                historyDiv.innerHTML = '<p style="text-align: center; color: #999;">Belum ada data absensi hari ini</p>';
+                return;
+            }
+            
+            historyDiv.innerHTML = '';
+            attendanceHistory.forEach(record => {
+                const item = document.createElement('div');
+                item.className = `attendance-item ${record.action === 'Check In' ? 'checkin' : 'checkout'}`;
+                item.innerHTML = `
+                    <div>
+                        <strong>${record.name}</strong> ${record.emoji.split(' ')[0]}<br>
+                        <small>${record.time}</small>
+                    </div>
+                    <div style="font-weight: 600; color: ${record.action === 'Check In' ? '#10b981' : '#ef4444'}">
+                        ${record.action}
+                    </div>
+                `;
+                historyDiv.appendChild(item);
+            });
+        }
+
+        function updateCharts() {
+            // Data untuk attendance chart
+            const checkedInCount = attendanceHistory.filter(r => r.action === 'Check In').length;
+            const checkedOutCount = attendanceHistory.filter(r => r.action === 'Check Out').length;
+            const notYet = studentNames.length - checkedInCount;
+
+            // Destroy old charts
+            if (attendanceChart) attendanceChart.destroy();
+            if (emojiChart) emojiChart.destroy();
+
+            // Attendance Chart
+            const ctx1 = document.getElementById('attendanceChart').getContext('2d');
+            attendanceChart = new Chart(ctx1, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Check In', 'Check Out', 'Belum Absen'],
+                    datasets: [{
+                        data: [checkedInCount, checkedOutCount, notYet],
+                        backgroundColor: ['#10b981', '#ef4444', '#e5e7eb'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+
+            // Emoji Chart
+            const emojiData = {};
+            attendanceHistory.forEach(record => {
+                const emoji = record.emoji.split(' ')[1]; // Get emotion name
+                emojiData[emoji] = (emojiData[emoji] || 0) + 1;
+            });
+
+            const ctx2 = document.getElementById('emojiChart').getContext('2d');
+            emojiChart = new Chart(ctx2, {
+                type: 'pie',
+                data: {
+                    labels: Object.keys(emojiData),
+                    datasets: [{
+                        data: Object.values(emojiData),
+                        backgroundColor: [
+                            '#fbbf24', '#ef4444', '#8b5cf6', 
+                            '#ec4899', '#10b981', '#f97316'
+                        ],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        }
+
+        // Load Chart.js library
+        const script = document.createElement('script');
+        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js';
+        document.head.appendChild(script);
+
+        // Download Excel
+        function downloadExcel() {
+            let csvContent = "data:text/csv;charset=utf-8,";
+            csvContent += "Nama,Mood,Status,Waktu,Tanggal\n";
+            
+            attendanceHistory.forEach(record => {
+                csvContent += `${record.name},${record.emoji},${record.action},${record.time},${record.date}\n`;
+            });
+            
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "absensi_sd_lazuardi.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // Download PDF
+        function downloadPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            // Header
+            doc.setFontSize(18);
+            doc.text("Laporan Absensi SD Lazuardi", 20, 20);
+            
+            doc.setFontSize(12);
+            const date = new Date().toLocaleDateString('id-ID');
+            doc.text(`Tanggal: ${date}`, 20, 30);
+            
+            // Stats
+            doc.setFontSize(14);
+            doc.text("Ringkasan:", 20, 45);
+            doc.setFontSize(11);
+            doc.text(`Total Siswa: ${studentNames.length}`, 20, 55);
+            doc.text(`Sudah Check In: ${attendanceHistory.filter(r => r.action === 'Check In').length}`, 20, 62);
+            doc.text(`Sudah Check Out: ${attendanceHistory.filter(r => r.action === 'Check Out').length}`, 20, 69);
+            
+            // Table
+            doc.setFontSize(14);
+            doc.text("Daftar Absensi:", 20, 85);
+            
+            let y = 95;
+            doc.setFontSize(10);
+            attendanceHistory.forEach((record, index) => {
+                if (y > 270) {
+                    doc.addPage();
+                    y = 20;
+                }
+                doc.text(`${index + 1}. ${record.name} - ${record.emoji} - ${record.action} (${record.time})`, 20, y);
+                y += 7;
+            });
+            
+            doc.save("absensi_sd_lazuardi.pdf");
+        }
+
+        // Load jsPDF library
+        const pdfScript = document.createElement('script');
+        pdfScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+        document.head.appendChild(pdfScript);
+
+        // Initialize
+        loadStudentNames();
+    </script>
+</body>
+</html>
