@@ -137,8 +137,8 @@
         .page {
             display: none;
             opacity: 0;
-            transform: scale(0.95);
-            transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+            transform: scale(0.98);
+            transition: opacity 0.3s ease, transform 0.3s ease;
         }
 
         .page.active {
@@ -149,7 +149,7 @@
 
         .page.fade-out {
             opacity: 0;
-            transform: scale(0.95);
+            transform: scale(0.98);
         }
 
         .logo-transition-overlay {
@@ -164,7 +164,7 @@
             align-items: center;
             z-index: 9999;
             opacity: 0;
-            transition: opacity 0.3s ease-in-out;
+            transition: opacity 0.2s ease;
         }
 
         .logo-transition-overlay.active {
@@ -173,16 +173,25 @@
         }
 
         .logo-transition-overlay img {
-            width: 100px;
-            height: 100px;
+            width: 80px;
+            height: 80px;
             object-fit: contain;
-            animation: logoTransitionZoom 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            animation: logoTransitionZoom 0.5s ease;
         }
 
         @keyframes logoTransitionZoom {
-            0% { transform: scale(0); opacity: 0; }
-            50% { transform: scale(3); opacity: 1; }
-            100% { transform: scale(0); opacity: 0; }
+            0% { 
+                transform: scale(0.8); 
+                opacity: 0; 
+            }
+            50% { 
+                transform: scale(1.1); 
+                opacity: 1; 
+            }
+            100% { 
+                transform: scale(0.8); 
+                opacity: 0; 
+            }
         }
 
         h1 {
@@ -196,7 +205,7 @@
         .step {
             display: none;
             opacity: 0;
-            transition: opacity 0.4s ease-in-out, transform 0.4s ease-in-out;
+            transition: opacity 0.3s ease, transform 0.3s ease;
             transform: translateY(20px);
         }
 
@@ -479,6 +488,13 @@
         .success-icon {
             font-size: 80px;
             margin-bottom: 20px;
+            animation: successPulse 0.6s ease-in-out;
+        }
+
+        @keyframes successPulse {
+            0% { transform: scale(0); opacity: 0; }
+            50% { transform: scale(1.2); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
         }
 
         .success-text {
@@ -624,12 +640,224 @@
             margin-top: 5px;
         }
 
-        @media (max-width: 768px) {
+        /* Tablet Mode */
+        @media (max-width: 1024px) and (min-width: 769px) {
+            .container {
+                max-width: 850px;
+                height: 80vh;
+            }
+            
+            .dashboard-container {
+                max-width: 1200px;
+                height: 85vh;
+            }
+            
+            .name-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 12px;
+            }
+            
+            .emoji-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 15px;
+            }
+            
+            .emoji-btn {
+                padding: 25px;
+                font-size: 50px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 15px;
+            }
+            
             .chart-section {
                 grid-template-columns: 1fr;
+                gap: 20px;
             }
+        }
+
+        /* Mobile Mode */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .nav-tabs {
+                flex-direction: column;
+                gap: 8px;
+            }
+            
+            .tab-btn {
+                padding: 12px 30px;
+                font-size: 15px;
+            }
+            
+            .container {
+                padding: 25px 30px;
+                width: 95vw;
+                height: 80vh;
+            }
+            
+            .dashboard-container {
+                padding: 25px 30px;
+                width: 95vw;
+                height: 85vh;
+            }
+            
+            .school-logo {
+                top: 15px;
+                left: 20px;
+                gap: 8px;
+            }
+            
+            .school-logo-icon {
+                width: 40px;
+                height: 40px;
+            }
+            
+            .school-name-main {
+                font-size: 14px;
+            }
+            
+            .school-name-sub {
+                font-size: 11px;
+            }
+            
+            h1 {
+                font-size: 24px;
+                margin-top: 20px;
+                margin-bottom: 20px;
+            }
+            
+            label {
+                font-size: 16px;
+                margin-bottom: 12px;
+            }
+            
+            .name-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+                max-height: 350px;
+            }
+            
+            .name-btn {
+                padding: 15px 10px;
+                font-size: 15px;
+            }
+            
+            .emoji-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 12px;
+            }
+            
+            .emoji-btn {
+                padding: 20px;
+                font-size: 40px;
+            }
+            
+            .emoji-label {
+                font-size: 12px;
+            }
+            
+            .btn {
+                padding: 12px 20px;
+                font-size: 15px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+            }
+            
+            .stat-card {
+                padding: 18px;
+            }
+            
+            .stat-card h3 {
+                font-size: 12px;
+            }
+            
+            .stat-card .number {
+                font-size: 28px;
+            }
+            
+            .chart-section {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .chart-card {
+                padding: 18px;
+            }
+            
+            .chart-card h3 {
+                font-size: 16px;
+            }
+            
+            .attendance-list {
+                padding: 18px;
+                max-height: 200px;
+            }
+            
+            .attendance-list h3 {
+                font-size: 16px;
+            }
+            
             .download-section {
                 flex-direction: column;
+                gap: 10px;
+            }
+            
+            .btn-download {
+                justify-content: center;
+                width: 100%;
+            }
+            
+            .success-icon {
+                font-size: 60px;
+            }
+            
+            .success-text {
+                font-size: 20px;
+            }
+        }
+
+        /* Small Mobile */
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px 15px;
+                height: 85vh;
+            }
+            
+            .dashboard-container {
+                padding: 20px 15px;
+                height: 88vh;
+            }
+            
+            h1 {
+                font-size: 20px;
+            }
+            
+            .name-grid {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+            
+            .emoji-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+            }
+            
+            .emoji-btn {
+                padding: 18px;
+                font-size: 35px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 10px;
             }
         }
     </style>
@@ -719,7 +947,6 @@
                     <div class="success-icon">✅</div>
                     <div class="success-text" id="successText"></div>
                     <div class="success-details" id="successDetails"></div>
-                    <button class="btn btn-primary" onclick="resetForm()">Absen Lagi</button>
                 </div>
             </div>
         </div>
@@ -734,7 +961,7 @@
                 </div>
                 <div class="school-name">
                     <div class="school-name-main">SD Lazuardi</div>
-                    <div class="school-name-sub">Jakarta</div>
+                    <div class="school-name-sub">Depok</div>
                 </div>
             </div>
             
@@ -752,7 +979,7 @@
             <div class="stats-grid">
                 <div class="stat-card">
                     <h3>Total Siswa</h3>
-                    <div class="number" id="totalStudents">16</div>
+                    <div class="number" id="totalStudents">30</div>
                 </div>
                 <div class="stat-card" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
                     <h3>Sudah Check In</h3>
@@ -786,6 +1013,8 @@
         </div>
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script>
         // Daftar nama siswa SD
         const studentNames = [
@@ -803,12 +1032,14 @@
         let studentName = '';
         let selectedEmoji = '';
         let attendanceHistory = [];
+        let checkedInStudents = {}; // Track students who checked in
+        let checkedOutStudents = {}; // Track students who checked out
 
         // Chart objects
         let attendanceChart = null;
         let emojiChart = null;
 
-        // Switch between pages
+        // Switch between pages with logo animation
         function switchPage(page) {
             const currentPage = document.querySelector('.page.active');
             const logoOverlay = document.getElementById('logoTransition');
@@ -837,8 +1068,8 @@
                 // Hide logo overlay
                 setTimeout(() => {
                     logoOverlay.classList.remove('active');
-                }, 400);
-            }, 400);
+                }, 200);
+            }, 250);
         }
 
         // Load nama siswa
@@ -851,9 +1082,46 @@
                 btn.onclick = () => selectName(name, btn);
                 nameGrid.appendChild(btn);
             });
+            
+            // Update button states based on attendance
+            updateNameButtonStates();
+        }
+        
+        function updateNameButtonStates() {
+            const nameButtons = document.querySelectorAll('.name-btn');
+            nameButtons.forEach(btn => {
+                const name = btn.textContent.split('\n')[0]; // Get only the name part
+                
+                // Reset button first
+                btn.style.opacity = '1';
+                btn.style.pointerEvents = 'auto';
+                btn.style.background = '#f5f5f5';
+                btn.innerHTML = name;
+                
+                // Check status
+                const hasCheckedIn = checkedInStudents[name];
+                const hasCheckedOut = checkedOutStudents[name];
+                
+                if (hasCheckedIn && hasCheckedOut) {
+                    // Both done - disable button
+                    btn.style.opacity = '0.5';
+                    btn.style.pointerEvents = 'none';
+                    btn.style.background = '#e0e0e0';
+                    btn.innerHTML = name + '<br><small style="font-size: 11px; color: #10b981;">✓ Check In & Out</small>';
+                } else if (hasCheckedIn) {
+                    // Only checked in - show status
+                    btn.innerHTML = name + '<br><small style="font-size: 11px; color: #f59e0b;">✓ Check In</small>';
+                }
+            });
         }
 
         function selectName(name, btn) {
+            // Check attendance status
+            if (checkedInStudents[name] && checkedOutStudents[name]) {
+                alert(`${name} sudah melakukan Check In dan Check Out hari ini!`);
+                return;
+            }
+            
             document.querySelectorAll('.name-btn').forEach(b => b.classList.remove('selected'));
             btn.classList.add('selected');
             studentName = name;
@@ -861,7 +1129,7 @@
             
             setTimeout(() => {
                 showStep(2);
-            }, 300);
+            }, 200);
         }
 
         function showStep(step) {
@@ -873,7 +1141,7 @@
             setTimeout(() => {
                 document.getElementById('step' + step).classList.add('active');
                 currentStep = step;
-            }, 100);
+            }, 150);
         }
 
         function selectEmoji(emoji, btn) {
@@ -892,6 +1160,22 @@
         }
 
         function submitAttendance(action) {
+            // Validation: Check if already done this action
+            if (action === 'Check In' && checkedInStudents[studentName]) {
+                alert(`${studentName} sudah melakukan Check In! Silakan lakukan Check Out.`);
+                return;
+            }
+            
+            if (action === 'Check Out' && !checkedInStudents[studentName]) {
+                alert(`${studentName} belum Check In! Silakan Check In terlebih dahulu.`);
+                return;
+            }
+            
+            if (action === 'Check Out' && checkedOutStudents[studentName]) {
+                alert(`${studentName} sudah melakukan Check Out!`);
+                return;
+            }
+            
             const now = new Date();
             const time = now.toLocaleTimeString('id-ID');
             const date = now.toLocaleDateString('id-ID');
@@ -901,15 +1185,28 @@
                 emoji: selectedEmoji,
                 action: action,
                 time: time,
-                date: date
+                date: date,
+                timestamp: now.getTime()
             };
             
             attendanceHistory.unshift(record);
             
-            // Reset form dan langsung balik ke step 1
+            // Mark student attendance status
+            if (action === 'Check In') {
+                checkedInStudents[studentName] = true;
+            } else if (action === 'Check Out') {
+                checkedOutStudents[studentName] = true;
+            }
+            
+            // Show success briefly
+            document.getElementById('successText').textContent = `${action} Berhasil!`;
+            document.getElementById('successDetails').textContent = `${studentName} - ${selectedEmoji} pada ${time}`;
+            showStep(4);
+            
+            // Auto reset setelah 1.5 detik
             setTimeout(() => {
                 resetForm();
-            }, 500);
+            }, 1500);
         }
 
         function resetForm() {
@@ -917,6 +1214,7 @@
             document.querySelectorAll('.emoji-btn').forEach(b => b.classList.remove('selected'));
             studentName = '';
             selectedEmoji = '';
+            updateNameButtonStates(); // Update button states after attendance
             showStep(1);
         }
 
@@ -1035,24 +1333,39 @@
             });
         }
 
-        // Load Chart.js library
-        const script = document.createElement('script');
-        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js';
-        document.head.appendChild(script);
-
         // Download Excel
         function downloadExcel() {
-            let csvContent = "data:text/csv;charset=utf-8,";
-            csvContent += "Nama,Mood,Status,Waktu,Tanggal\n";
+            if (attendanceHistory.length === 0) {
+                alert('Belum ada data absensi untuk diunduh!');
+                return;
+            }
+
+            let csvContent = "data:text/csv;charset=utf-8,\uFEFF";
+            csvContent += "LAPORAN ABSENSI SD LAZUARDI DEPOK\n";
+            csvContent += `Tanggal: ${new Date().toLocaleDateString('id-ID')}\n\n`;
             
-            attendanceHistory.forEach(record => {
-                csvContent += `${record.name},${record.emoji},${record.action},${record.time},${record.date}\n`;
+            // Header tabel
+            csvContent += "No,Nama Siswa,Perasaan,Status,Waktu,Tanggal\n";
+            
+            // Data absensi
+            attendanceHistory.forEach((record, index) => {
+                csvContent += `${index + 1},${record.name},${record.emoji},${record.action},${record.time},${record.date}\n`;
             });
+            
+            // Ringkasan
+            const checkedInCount = attendanceHistory.filter(r => r.action === 'Check In').length;
+            const checkedOutCount = attendanceHistory.filter(r => r.action === 'Check Out').length;
+            csvContent += `\n\nRINGKASAN:\n`;
+            csvContent += `Total Siswa,${studentNames.length}\n`;
+            csvContent += `Sudah Check In,${checkedInCount}\n`;
+            csvContent += `Sudah Check Out,${checkedOutCount}\n`;
+            csvContent += `Tingkat Kehadiran,${Math.round((checkedInCount / studentNames.length) * 100)}%\n`;
             
             const encodedUri = encodeURI(csvContent);
             const link = document.createElement("a");
             link.setAttribute("href", encodedUri);
-            link.setAttribute("download", "absensi_sd_lazuardi.csv");
+            const fileName = `Absensi_SD_Lazuardi_${new Date().toLocaleDateString('id-ID').replace(/\//g, '-')}.csv`;
+            link.setAttribute("download", fileName);
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
@@ -1060,47 +1373,154 @@
 
         // Download PDF
         function downloadPDF() {
+            if (attendanceHistory.length === 0) {
+                alert('Belum ada data absensi untuk diunduh!');
+                return;
+            }
+
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
             
-            // Header
-            doc.setFontSize(18);
-            doc.text("Laporan Absensi SD Lazuardi", 20, 20);
+            // Header dengan logo
+            doc.setFillColor(102, 126, 234);
+            doc.rect(0, 0, 210, 40, 'F');
+            
+            doc.setTextColor(255, 255, 255);
+            doc.setFontSize(20);
+            doc.setFont(undefined, 'bold');
+            doc.text("SD LAZUARDI DEPOK", 105, 15, { align: 'center' });
             
             doc.setFontSize(12);
-            const date = new Date().toLocaleDateString('id-ID');
-            doc.text(`Tanggal: ${date}`, 20, 30);
+            doc.setFont(undefined, 'normal');
+            doc.text("Laporan Absensi Harian", 105, 25, { align: 'center' });
+            doc.text(`Tanggal: ${new Date().toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}`, 105, 33, { align: 'center' });
             
-            // Stats
+            // Reset text color
+            doc.setTextColor(0, 0, 0);
+            
+            // Ringkasan Statistik
             doc.setFontSize(14);
-            doc.text("Ringkasan:", 20, 45);
+            doc.setFont(undefined, 'bold');
+            doc.text("Ringkasan Kehadiran", 20, 55);
+            
+            const checkedInCount = attendanceHistory.filter(r => r.action === 'Check In').length;
+            const checkedOutCount = attendanceHistory.filter(r => r.action === 'Check Out').length;
+            const attendanceRate = Math.round((checkedInCount / studentNames.length) * 100);
+            
             doc.setFontSize(11);
-            doc.text(`Total Siswa: ${studentNames.length}`, 20, 55);
-            doc.text(`Sudah Check In: ${attendanceHistory.filter(r => r.action === 'Check In').length}`, 20, 62);
-            doc.text(`Sudah Check Out: ${attendanceHistory.filter(r => r.action === 'Check Out').length}`, 20, 69);
+            doc.setFont(undefined, 'normal');
             
-            // Table
-            doc.setFontSize(14);
-            doc.text("Daftar Absensi:", 20, 85);
+            // Box untuk statistik
+            doc.setDrawColor(102, 126, 234);
+            doc.setLineWidth(0.5);
+            doc.rect(20, 60, 85, 30);
+            doc.rect(110, 60, 85, 30);
             
-            let y = 95;
+            doc.text(`Total Siswa: ${studentNames.length}`, 25, 68);
+            doc.setTextColor(16, 185, 129);
+            doc.text(`Check In: ${checkedInCount}`, 25, 76);
+            doc.setTextColor(239, 68, 68);
+            doc.text(`Check Out: ${checkedOutCount}`, 25, 84);
+            
+            doc.setTextColor(0, 0, 0);
+            doc.setFontSize(16);
+            doc.setFont(undefined, 'bold');
+            doc.text(`${attendanceRate}%`, 152, 75, { align: 'center' });
             doc.setFontSize(10);
-            attendanceHistory.forEach((record, index) => {
+            doc.setFont(undefined, 'normal');
+            doc.text("Tingkat Kehadiran", 152, 83, { align: 'center' });
+            
+            // Tabel Absensi
+            doc.setTextColor(0, 0, 0);
+            doc.setFontSize(14);
+            doc.setFont(undefined, 'bold');
+            doc.text("Daftar Absensi Siswa", 20, 105);
+            
+            // Header tabel
+            doc.setFillColor(102, 126, 234);
+            doc.rect(20, 110, 170, 8, 'F');
+            
+            doc.setTextColor(255, 255, 255);
+            doc.setFontSize(10);
+            doc.setFont(undefined, 'bold');
+            doc.text("No", 23, 115);
+            doc.text("Nama Siswa", 33, 115);
+            doc.text("Perasaan", 85, 115);
+            doc.text("Status", 115, 115);
+            doc.text("Waktu", 150, 115);
+            
+            // Data tabel
+            doc.setTextColor(0, 0, 0);
+            doc.setFont(undefined, 'normal');
+            doc.setFontSize(9);
+            
+            let y = 123;
+            let rowNumber = 1;
+            
+            // Sort by timestamp
+            const sortedHistory = [...attendanceHistory].sort((a, b) => b.timestamp - a.timestamp);
+            
+            sortedHistory.forEach((record, index) => {
                 if (y > 270) {
                     doc.addPage();
                     y = 20;
+                    
+                    // Repeat header on new page
+                    doc.setFillColor(102, 126, 234);
+                    doc.rect(20, 15, 170, 8, 'F');
+                    doc.setTextColor(255, 255, 255);
+                    doc.setFontSize(10);
+                    doc.setFont(undefined, 'bold');
+                    doc.text("No", 23, 20);
+                    doc.text("Nama Siswa", 33, 20);
+                    doc.text("Perasaan", 85, 20);
+                    doc.text("Status", 115, 20);
+                    doc.text("Waktu", 150, 20);
+                    
+                    doc.setTextColor(0, 0, 0);
+                    doc.setFont(undefined, 'normal');
+                    doc.setFontSize(9);
+                    y = 28;
                 }
-                doc.text(`${index + 1}. ${record.name} - ${record.emoji} - ${record.action} (${record.time})`, 20, y);
+                
+                // Alternate row colors
+                if (index % 2 === 0) {
+                    doc.setFillColor(245, 245, 245);
+                    doc.rect(20, y - 4, 170, 7, 'F');
+                }
+                
+                doc.text(rowNumber.toString(), 23, y);
+                doc.text(record.name.substring(0, 20), 33, y);
+                doc.text(record.emoji.split(' ')[0], 85, y);
+                
+                // Color code status
+                if (record.action === 'Check In') {
+                    doc.setTextColor(16, 185, 129);
+                } else {
+                    doc.setTextColor(239, 68, 68);
+                }
+                doc.text(record.action, 115, y);
+                doc.setTextColor(0, 0, 0);
+                
+                doc.text(record.time, 150, y);
+                
                 y += 7;
+                rowNumber++;
             });
             
-            doc.save("absensi_sd_lazuardi.pdf");
+            // Footer
+            const pageCount = doc.internal.getNumberOfPages();
+            for (let i = 1; i <= pageCount; i++) {
+                doc.setPage(i);
+                doc.setFontSize(8);
+                doc.setTextColor(128, 128, 128);
+                doc.text(`Halaman ${i} dari ${pageCount}`, 105, 290, { align: 'center' });
+                doc.text(`Dicetak pada: ${new Date().toLocaleString('id-ID')}`, 105, 295, { align: 'center' });
+            }
+            
+            const fileName = `Laporan_Absensi_SD_Lazuardi_${new Date().toLocaleDateString('id-ID').replace(/\//g, '-')}.pdf`;
+            doc.save(fileName);
         }
-
-        // Load jsPDF library
-        const pdfScript = document.createElement('script');
-        pdfScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
-        document.head.appendChild(pdfScript);
 
         // Initialize
         loadStudentNames();
