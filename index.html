@@ -690,6 +690,9 @@
             border-radius: 15px;
             max-height: 280px;
             overflow-y: auto;
+            min-height: 280px;
+            display: flex;
+            flex-direction: column;
         }
 
         .attendance-list h3 {
@@ -1463,12 +1466,21 @@
         function updateAttendanceList() {
             const historyDiv = document.getElementById('attendanceHistory');
             if (attendanceHistory.length === 0) {
-                historyDiv.innerHTML = '<p style="text-align: center; color: #999;">Belum ada data absensi hari ini</p>';
+                historyDiv.innerHTML = `
+                    <div style="text-align: center; padding: 40px 20px;">
+                        <div style="font-size: 48px; margin-bottom: 15px;">📋</div>
+                        <p style="color: #999; font-size: 16px; margin-bottom: 8px;">Belum ada data absensi hari ini</p>
+                        <p style="color: #ccc; font-size: 14px;">Siswa dapat mulai melakukan absensi</p>
+                    </div>
+                `;
                 return;
             }
             
             historyDiv.innerHTML = '';
-            attendanceHistory.forEach(record => {
+            // Tampilkan dari yang pertama absen (tidak dibalik)
+            const sortedHistory = [...attendanceHistory].reverse();
+            
+            sortedHistory.forEach(record => {
                 const item = document.createElement('div');
                 item.className = `attendance-item ${record.action === 'Check In' ? 'checkin' : 'checkout'}`;
                 item.innerHTML = `
@@ -1505,19 +1517,32 @@
                 },
                 options: {
                     responsive: true,
+                    maintainAspectRatio: true,
                     plugins: {
                         legend: {
-                            position: 'bottom'
+                            position: 'bottom',
+                            labels: {
+                                padding: 15,
+                                font: {
+                                    size: 12
+                                }
+                            }
                         }
                     }
                 }
             });
 
             const emojiData = {};
-            attendanceHistory.forEach(record => {
-                const emoji = record.emoji.split(' ')[1];
-                emojiData[emoji] = (emojiData[emoji] || 0) + 1;
-            });
+            
+            // Jika belum ada data, tampilkan placeholder
+            if (attendanceHistory.length === 0) {
+                emojiData['Belum Ada Data'] = 1;
+            } else {
+                attendanceHistory.forEach(record => {
+                    const emoji = record.emoji.split(' ')[1];
+                    emojiData[emoji] = (emojiData[emoji] || 0) + 1;
+                });
+            }
 
             const ctx2 = document.getElementById('emojiChart').getContext('2d');
             emojiChart = new Chart(ctx2, {
@@ -1526,18 +1551,24 @@
                     labels: Object.keys(emojiData),
                     datasets: [{
                         data: Object.values(emojiData),
-                        backgroundColor: [
-                            '#fbbf24', '#ef4444', '#8b5cf6', 
-                            '#ec4899', '#10b981', '#f97316'
-                        ],
+                        backgroundColor: attendanceHistory.length === 0 
+                            ? ['#e5e7eb'] 
+                            : ['#fbbf24', '#ef4444', '#8b5cf6', '#ec4899', '#10b981', '#f97316'],
                         borderWidth: 0
                     }]
                 },
                 options: {
                     responsive: true,
+                    maintainAspectRatio: true,
                     plugins: {
                         legend: {
-                            position: 'bottom'
+                            position: 'bottom',
+                            labels: {
+                                padding: 15,
+                                font: {
+                                    size: 12
+                                }
+                            }
                         }
                     }
                 }
@@ -1557,7 +1588,10 @@
             
             csvContent += "No,Nama Siswa,Perasaan,Status,Waktu,Tanggal\n";
             
-            attendanceHistory.forEach((record, index) => {
+            // Urutkan dari yang pertama absen (tidak dibalik)
+            const sortedHistory = [...attendanceHistory].reverse();
+            
+            sortedHistory.forEach((record, index) => {
                 const feeling = emojiToText(record.emoji);
                 csvContent += `${index + 1},${record.name},${feeling},${record.action},${record.time},${record.date}\n`;
             });
@@ -1699,7 +1733,8 @@
             let y = 138;
             let rowNumber = 1;
             
-            const sortedHistory = [...attendanceHistory].sort((a, b) => b.timestamp - a.timestamp);
+            // Urutkan dari yang pertama absen (tidak dibalik)
+            const sortedHistory = [...attendanceHistory].reverse();
             
             sortedHistory.forEach((record, index) => {
                 if (y > 270) {
